@@ -3,29 +3,42 @@ package main
 import "fmt"
 
 func main() {
-	// output := birthday([]int32{1, 2, 1, 3, 2}, 3, 2) // expected: 2
-	// output := birthday([]int32{1, 1, 1, 1, 1, 1}, 3, 2) // expected: 0
-	// output := birthday([]int32{4}, 4, 1) // expected: 1
-	// output := birthday([]int32{1, 3, 2, 2, 2, 1}, 4, 3)    // expected: 3
-	// output := birthday([]int32{1, 3, 2, 2, 2, 1, 3}, 4, 3) // expected: 4
-	output := birthday([]int32{5, 5, 3, 2, 2, 2, 1, 2, 5, 3, 5, 5, 4, 3, 3, 5}, 13, 3) // expected: 3
-	fmt.Println(output)
+	inputs := []struct {
+		numberOfSquares []int32
+		birthDay        int32
+		birthMonth      int32
+		expectedOutput  int32
+	}{
+		{numberOfSquares: []int32{1, 2, 1, 3, 2}, birthDay: 3, birthMonth: 2, expectedOutput: 2},
+		{numberOfSquares: []int32{1, 1, 1, 1, 1, 1}, birthDay: 3, birthMonth: 2, expectedOutput: 0},
+		{numberOfSquares: []int32{4}, birthDay: 4, birthMonth: 1, expectedOutput: 1},
+		{numberOfSquares: []int32{1, 3, 2, 2, 2, 1}, birthDay: 4, birthMonth: 3, expectedOutput: 0},
+		{numberOfSquares: []int32{1, 3, 0, 1, 2, 1, 1, 5, 0, 1}, birthDay: 4, birthMonth: 3, expectedOutput: 4},
+		{numberOfSquares: []int32{5, 5, 3, 2, 2, 2, 1, 2, 5, 3, 5, 5, 4, 3, 3, 5}, birthDay: 13, birthMonth: 3, expectedOutput: 3},
+	}
+
+	for _, input := range inputs {
+		output := birthday(input.numberOfSquares, input.birthDay, input.birthMonth)
+		if input.expectedOutput != output {
+			panic(fmt.Sprintf("Want %d but got %d", input.expectedOutput, output))
+		}
+	}
 }
 
 func birthday(s []int32, d int32, m int32) int32 {
-	squares := int32(0)
-	lenght := len(s)
-
-	if lenght == 1 && s[0] == d {
+	if len(s) == 1 && s[0] == d {
 		return 1
 	}
 
-	for i := 0; i < lenght; i++ {
-		if i+1 == lenght {
-			break
+	var squares int32
+	for i := int32(0); i < int32(len(s))-m; i++ {
+
+		var count int32
+		for j := i; j < i+m; j++ {
+			count += s[j]
 		}
 
-		if s[i]+s[i+1] == d {
+		if count == d {
 			squares++
 		}
 	}
